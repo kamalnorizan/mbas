@@ -12,7 +12,7 @@
         <div class="d-flex align-items-center">
             <img class="me-2" src="{{ asset('/falcon/assets/img/icons/spot-illustrations/falcon.png') }}" alt="" width="40" />
             {{-- <img class="me-2" src="{{ asset('/images/logo.png') }}" alt="" width="40" /> --}}
-            <span class="font-sans-serif">DPMA</span>
+            <span class="font-sans-serif">MBAS Template</span>
         </div>
     </a>
 
@@ -47,22 +47,10 @@
             <div class="dropdown-menu dropdown-caret dropdown-caret dropdown-menu-end py-0"
                 aria-labelledby="navbarDropdownUser">
                 <div class="bg-white dark__bg-1000 rounded-2 py-2">
-
-                    {{-- @if (@Auth()->user()->hasRole('client-admin')) --}}
                     <a class="dropdown-item" href="#">Profile</a>
                     <a class="dropdown-item" href="#">Account</a>
-                    {{-- @endif --}}
-
-                    {{-- @if (@Auth()->user()->hasRole('client-respondent')) --}}
-                        <a class="dropdown-item" href="#">Profile</a>
-                    {{-- @endif --}}
-
-                    {{-- @if (@Auth()->user()->hasRole('admin')) --}}
-                        <a class="dropdown-item" href="#">Profile & &nbsp;Account</a>
-                    {{-- @endif --}}
-
                     @if(@Auth()->check())
-                    <a class="dropdown-item" href="/logout">Logout</a>
+                    <a class="dropdown-item logoutBtn" href="#">Logout</a>
                     @endif
                 </div>
             </div>

@@ -34,7 +34,7 @@
                         </div>
                     </div>
 
-                    <a class="nav-link" href="/post-dashboard" role="button">
+                    <a class="nav-link {{ Route::is('dashboard') ? 'active':''}}" href="{{route('dashboard')}}" role="button">
                         <div class="d-flex align-items-center">
                             <span class="nav-link-icon">
                                 <span class="fas fa-chart-line"></span>
@@ -43,7 +43,7 @@
                         </div>
                     </a>
 
-                    <a class="nav-link" href="/post-list" role="button">
+                    <a class="nav-link {{ Route::is('posts.index') ? 'active':''}}" href="{{route('posts.index')}}" role="button">
                         <div class="d-flex align-items-center">
                             <span class="nav-link-icon">
                                 <span class="fas fa-list"></span>
@@ -52,10 +52,10 @@
                         </div>
                     </a>
 
-                    <a class="nav-link" href="/post-create" role="button">
+                    <a class="nav-link {{ Route::is('posts.create') ? 'active':''}}" href="{{route('posts.create')}}" role="button">
                         <div class="d-flex align-items-center">
                             <span class="nav-link-icon">
-                                <span class="fas fa-list"></span>
+                                <span class="fas fa-plus"></span>
                             </span>
                             <span class="nav-link-text ps-1">New Post</span>
                         </div>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DPMA</title>
+    <title>MBAS Template</title>
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/falcon/assets/img/favicons/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/falcon/assets/img/favicons/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/falcon/assets/img/favicons/favicon-16x16.png') }}">
@@ -21,7 +21,7 @@
     <link href="{{ asset('/falcon/assets/css/theme.css') }}" rel="stylesheet" id="style-default">
     <link href="{{ asset('/falcon/assets/css/user-rtl.css') }}" rel="stylesheet" id="user-style-rtl">
     <link href="{{ asset('/falcon/assets/css/user.css') }}" rel="stylesheet" id="user-style-default">
-    <link href="{{ asset('/css/dpma.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/MBAS Template.css') }}" rel="stylesheet">
     <script>
         var isRTL = JSON.parse(localStorage.getItem('isRTL'));
         if (isRTL) {
@@ -37,6 +37,8 @@
             userLinkRTL.setAttribute('disabled', true);
         }
     </script>
+
+    @yield('style')
 </head>
 
 <body>
@@ -54,27 +56,17 @@
             @include('falcon.menu')
 
             <div class="content">
-                <!-- utk admin or client-admin -->
                 @include('falcon.top')
+                <div class="row">
+                    <div class="col-md-12">
+                        @include('flash::message')
+                    </div>
+                </div>
                 @yield('content')
 
                 <div class="wrapper">
                     <div class="row">
                         <div class="col-lg-12">
-                            @if(Session::has('msg'))
-                                <div id="banner" class='alert alert-success x-msg' style="position:fixed; bottom:40px; right:160px; min-height:50px; width:40%; z-index:1000;">
-                                    <strong>Alert</strong> <br>
-                                    {{ session('msg') }}
-                                </div>
-                            @endif
-
-                            @if(Session::has('error'))
-                                <div class="alert alert-danger x-msg" style="position:fixed;bottom:40px; right: 60px; min-height:50px;width:40%;z-index:100;">
-                                <strong>Alert</strong> <br>
-                                {{ Session::get('error')}}
-                                </div>
-                            @endif
-
                             @yield('main')
                         </div>
                     </div>
@@ -83,9 +75,8 @@
                 <footer class="footer">
                     <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
                         <div class="col-12 col-sm-auto text-center">
-                            <p class="mb-0 text-600">Thank you for visiting DPMA<span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> {{ date('Y') }} &copy;
-                                <a href="https://www.cybersecurity.my/">CyberSecurity Malaysia</a> &nbsp;&nbsp; | &nbsp;
-                                <img src="/images/cybersecurity.png">
+                            <p class="mb-0 text-600">Thank you for visiting MBAS Template<span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> {{ date('Y') }} &copy;
+                                <a href="https://pbt.kedah.gov.my/">Majlis Bandaraya Alor Setar</a> &nbsp;&nbsp;
                             </p>
                         </div>
                         <div class="col-12 col-sm-auto text-center">
@@ -95,24 +86,37 @@
                 </footer>
             </div>
 
-            {{-- @include('falcon.login') --}}
         </div>
     </main>
 
     @include('falcon.offcanvas')
-
+    <script src="{{ asset('/falcon/vendors/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/popper/popper.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/bootstrap/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/anchorjs/anchor.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/is/is.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/fontawesome/all.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/lodash/lodash.min.js') }}"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    {{-- <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script> --}}
     <script src="{{ asset('/falcon/vendors/list.js/list.min.js') }}"></script>
     <script src="{{ asset('/falcon/assets/js/theme.js') }}"></script>
-    <script src="{{ asset('/falcon/vendors/jquery/jquery.min.js') }}"></script>
+
     @yield('js')
     <script>
+        $('.logoutBtn').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{{ route('logout') }}",
+                type: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (data) {
+                    window.location.href = "{{ route('login') }}";
+                }
+            });
+        });
+
         window.setTimeout(function () {
             $(".x-msg").hide('slow');
         }, 4000);

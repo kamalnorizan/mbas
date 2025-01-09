@@ -3,83 +3,108 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
+use App\Models\Category;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
+use Yajra\DataTables\Facades\DataTables;
 
 class PostController extends Controller
 {
-    function listing() {
-        $posts = Post::all();
-        // compact() - bawa data ke view
-        return view('post.post_list', compact('posts'));
-    }
-
-    // show post form
-    function create() {
-        $p = new Post();
-        return view('post.form', compact('p'));
-    }
-
-    // save data into table post
-    function save(Request $req) {
-        // baca data yg di submit
-        //echo $req->title . $req->slug;
-
-        if (empty($req->id)) {
-            // insert
-            $post = new Post();
-        } else {
-            // update
-            $post = Post::find($req->id);
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        if (request()->ajax()) {
+            $posts = Post::with('user')->latest();
+            return DataTables()->of($posts)
+                ->addColumn('action', 'post.action')
+                ->addColumn('category', function ($post) {
+                    return $post->category->name;
+                })
+                ->addColumn('author', function ($post) {
+                    return $post->user->name;
+                })
+                ->addColumn('views', function ($post) {
+                    return '<i class="fa fa-eye" aria-hidden="true"></i> '.$post->view_count;
+                })
+                ->addColumn('likes', function ($post) {
+                    return '<i class="fa fa-thumbs-up text-primary" aria-hidden="true"></i> '.$post->like_count;
+                })
+                ->rawColumns(['likes','views','action'])
+                ->addIndexColumn()
+                ->make(true);
         }
 
-        $post->title = $req->title;
-        $post->slug = $req->slug;
-
-        // kalau validation gagal, patah balik ke form asal
-        $req->validate([
-            'title' => 'required|min:3',
-            'slug'  => 'required'
-        ]);
-
-        $post->save(); // insert OR update
-        return redirect('/post-list');
+        return view('post.index');
     }
 
-    function delete($id) {
-        // find($id) - cari by primary key, return 1 rekod / obj
-        Post::find($id)->delete();
-        return redirect('/post-list');
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $categories = Category::all();
+        return view('post.create', compact('categories'));
     }
 
-    function edit($id) {
-        // cari data original
-        $p = Post::find($id);
-        return view('post.form', compact('p'));
-    }
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StorePostRequest $request)
+    {
+        $post = new Post();
+        $post->uuid = Uuid::uuid4();
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->category_id = $request->category_id;
+        $post->user_id = Auth::user()->id;
 
-    //generate odf report
-    function report() {
-        $posts = Post::all();
-        $pdf = Pdf::loadView('post.report', compact('posts'));
-        return $pdf->stream(); // papar pdf dlm browser
-    }
-
-    function dashboard() {
-        // query builder
-        // $rs = DB::select("SELECT * FROM post");
-        $rs = DB::select("SELECT DAY(created_at) AS hari,
-                            COUNT(*) AS bil
-                            FROM post
-                            GROUP BY DAY(created_at)");
-        //dd($rs);
-        $x = [];
-        $y = [];
-        foreach ($rs as $data) {
-            $x[] = $data->hari;
-            $y[] = $data->bil;
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = time().'_'.$file->getClientOriginalName();
+            $file->storeAs('public/posts', $fileName);
+            $post->image = $fileName;
         }
-        return view('post.dashboard', compact('x', 'y'));
+
+        $post->save();
+
+        flash('Post stored successfully')->success()->important();
+        return redirect()->route('posts.index');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Post $post)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Post $post)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdatePostRequest $request, Post $post)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Post $post)
+    {
+        //
     }
 }
