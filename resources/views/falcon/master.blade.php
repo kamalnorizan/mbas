@@ -21,7 +21,6 @@
     <link href="{{ asset('/falcon/assets/css/theme.css') }}" rel="stylesheet" id="style-default">
     <link href="{{ asset('/falcon/assets/css/user-rtl.css') }}" rel="stylesheet" id="user-style-rtl">
     <link href="{{ asset('/falcon/assets/css/user.css') }}" rel="stylesheet" id="user-style-default">
-    <link href="{{ asset('/css/MBAS Template.css') }}" rel="stylesheet">
     <script>
         var isRTL = JSON.parse(localStorage.getItem('isRTL'));
         if (isRTL) {
@@ -100,6 +99,9 @@
     {{-- <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script> --}}
     <script src="{{ asset('/falcon/vendors/list.js/list.min.js') }}"></script>
     <script src="{{ asset('/falcon/assets/js/theme.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     @yield('js')
     <script>

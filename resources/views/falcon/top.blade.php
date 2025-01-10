@@ -37,18 +37,13 @@
                 role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
                 <div class="avatar avatar-xl">
-                    @if(isset(Auth::user()->details['profile_img']))
-                        <img class="rounded-circle" src="{{ asset('/storage/profile/' . Auth::user()->details['profile_img']) }}" alt="" />
-                    @else
-                        <img class="rounded-circle" src="{{ asset('/falcon/assets/img/team/avatar.png') }}" alt="" />
-                    @endif
+                        <img class="rounded-circle" src="{{ asset('storage/profile/personal/'.Auth::user()->profile_picture) }}" alt="" />
                 </div>
             </a>
             <div class="dropdown-menu dropdown-caret dropdown-caret dropdown-menu-end py-0"
                 aria-labelledby="navbarDropdownUser">
                 <div class="bg-white dark__bg-1000 rounded-2 py-2">
-                    <a class="dropdown-item" href="#">Profile</a>
-                    <a class="dropdown-item" href="#">Account</a>
+                    <a class="dropdown-item" href="{{route('profile.index')}}">Profile</a>
                     @if(@Auth()->check())
                     <a class="dropdown-item logoutBtn" href="#">Logout</a>
                     @endif

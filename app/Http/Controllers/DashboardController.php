@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -12,8 +13,12 @@ class DashboardController extends Controller
 {
     function index()
     {
-        return view('dashboard');
+        $usersCount = User::count();
+        $postsCount = Post::count();
+        $viewsCount = Post::sum('view_count');
+        return view('dashboard',compact('usersCount','postsCount','viewsCount'));
     }
+
     function ajaxLoadPostChart(Request $request)
     {
         $posts = Post::select(DB::raw('count(*) as post_count, DATE(created_at) as date'))

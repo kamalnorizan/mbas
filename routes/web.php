@@ -1,10 +1,14 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -15,15 +19,40 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dashboard/ajaxLoadPostChart', [DashboardController::class, 'ajaxLoadPostChart'])->name('dashboard.ajaxLoadPostChart');
     Route::post('/dashboard/ajaxLoadTop5', [DashboardController::class, 'ajaxLoadTop5'])->name('dashboard.ajaxLoadTop5');
 
-    Route::get('/post', [PostController::class, 'index'])->name('posts.index');
-    Route::get('/post/create', [PostController::class, 'create'])->name('posts.create');
-    Route::post('/post', [PostController::class, 'store'])->name('posts.store');
-    Route::get('/post-delete/{id}',[PostController::class, 'delete']);
-    Route::get('/post-edit/{id}',[PostController::class, 'edit']);
-    Route::get('/post-report',[PostController::class, 'report']);
-    Route::get('/post-dashboard',[PostController::class, 'dashboard']);
+    Route::group(['prefix' => 'post'], function () {
+        Route::get('/', [PostController::class, 'index'])->name('posts.index');
+        Route::get('/create', [PostController::class, 'create'])->name('posts.create');
+        Route::get('/{uuid}', [PostController::class, 'show'])->name('posts.show');
+        Route::put('/{uuid}', [PostController::class, 'update'])->name('posts.update');
+        Route::post('', [PostController::class, 'store'])->name('posts.store');
+        Route::get('/{uuid}/edit', [PostController::class, 'edit'])->name('posts.edit');
+        Route::delete('/{uuid}', [PostController::class, 'destroy'])->name('posts.destroy');
+    });
+
+    Route::post('/comment', [CommentController::class, 'store'])->name('comments.store');
+
+
+    Route::middleware('role:admin')->group(function () {
+        Route::group(['prefix' => 'user'], function () {
+            Route::get('/', [UserController::class, 'index'])->name('users.index');
+            Route::get('/{uuid}', [UserController::class, 'edit'])->name('users.edit');
+            Route::post('/assignrole', [UserController::class, 'assignrole'])->name('users.assignrole');
+        });
+    });
+
+
+
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+        Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('profile.changePassword');
+        Route::post('/updateimage', [ProfileController::class, 'updateimage'])->name('profile.updateimage');
+        Route::post('/updatecover', [ProfileController::class, 'updatecover'])->name('profile.updatecover');
+        Route::delete('', [ProfileController::class, 'deleteAccount'])->name('profile.deleteAccount');
+    });
+
 });
 
-Auth::routes();
+Route::post('/register/validate', [RegisterController::class, 'validation'])->name('register.validate');
 
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes();

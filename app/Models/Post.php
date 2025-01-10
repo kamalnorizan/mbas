@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Post extends Model
+class Post extends Model implements Auditable
 {
     use HasFactory;
+    use \OwenIt\Auditing\Auditable;
 
     public $timestamps = true;
 
@@ -20,6 +22,19 @@ class Post extends Model
     public $incrementing = true;
 
     protected $guarded = ['id'];
+
+    function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    protected $auditInclude = [
+        'title',
+        'content',
+        'category_id',
+        'user_id',
+        'file'
+    ];
 
     /**
      * Get the category that owns the Post

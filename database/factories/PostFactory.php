@@ -25,9 +25,9 @@ class PostFactory extends Factory
             'status' => 1,
             'user_id' => rand(1, 10),
             'category_id' => rand(1, 10),
-            'view_count' => rand(1, 100),
-            'like_count' => rand(1, 100),
-            'created_at' => Carbon::parse('2025-01-01')->addDays(rand(1, 350)),
+            'view_count' => rand(1, 1000),
+            'like_count' => rand(1, 1000),
+            'created_at' => Carbon::parse('2024-01-01')->addDays(rand(1, 350)),
         ];
     }
 }

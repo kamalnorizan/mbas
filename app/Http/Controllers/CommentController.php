@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Comment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
@@ -30,7 +31,15 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        //
+        $post = Post::where('uuid', $request->post_uuid)->first();
+        $comment = new Comment();
+        $comment->post_id = $post->id;
+        $comment->user_id = auth()->user()->id;
+        $comment->content = $request->content;
+        $comment->save();
+
+        flash('Comment stored successfully')->success()->important();
+        return redirect()->back();
     }
 
     /**

@@ -60,6 +60,16 @@
                             <span class="nav-link-text ps-1">New Post</span>
                         </div>
                     </a>
+                    @role('admin')
+                    <a class="nav-link {{ Route::is('users.index') ? 'active':''}}" href="{{route('users.index')}}" role="button">
+                        <div class="d-flex align-items-center">
+                            <span class="nav-link-icon">
+                                <span class="fas fa-users"></span>
+                            </span>
+                            <span class="nav-link-text ps-1">User Management</span>
+                        </div>
+                    </a>
+                    @endrole
                 </li>
             </ul>
         </div>

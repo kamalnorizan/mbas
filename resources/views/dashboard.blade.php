@@ -1,5 +1,47 @@
 @extends('falcon.master')
 @section('content')
+    <div class="row g-3 mb-3">
+        <div class="col-sm-6 col-md-4">
+            <div class="card overflow-hidden" style="min-width: 12rem">
+                <div class="bg-holder bg-card"
+                    style="background-image:url({{ asset('falcon/assets/img/icons/spot-illustrations/corner-1.png') }});"></div><!--/.bg-holder-->
+                <div class="card-body position-relative">
+                    <h6>Users</h6>
+                    <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning"
+                        data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
+                        {{$usersCount}}</div><a class="fw-semi-bold fs-10 text-nowrap" href="{{ route('users.index') }}">See
+                        all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="card overflow-hidden" style="min-width: 12rem">
+                <div class="bg-holder bg-card"
+                    style="background-image:url({{ asset('falcon/assets/img/icons/spot-illustrations/corner-2.png') }});"></div><!--/.bg-holder-->
+                <div class="card-body position-relative">
+                    <h6>Posts</h6>
+                    <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info"
+                        data-countup="{&quot;endValue&quot;:23.434,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
+                        {{$postsCount}}</div><a class="fw-semi-bold fs-10 text-nowrap"
+                        href="{{ route('posts.index') }}">All posts<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card overflow-hidden" style="min-width: 12rem">
+                <div class="bg-holder bg-card"
+                    style="background-image:url({{ asset('falcon/assets/img/icons/spot-illustrations/corner-3.png') }});"></div><!--/.bg-holder-->
+                <div class="card-body position-relative">
+                    <h6>Views</h6>
+                    <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif"
+                        data-countup="{&quot;endValue&quot;:43594,&quot;prefix&quot;:&quot;$&quot;}">{{$viewsCount}}</div>
+                    <a class="fw-semi-bold fs-10 text-nowrap" href="index.html">Statistics<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-6 pe-lg-2 mb-3">
             <div class="card h-lg-100 overflow-hidden">
@@ -22,10 +64,12 @@
                         <div class="col ps-x1 py-1 position-static">
                             <div class="d-flex align-items-center">
                                 <div class="avatar avatar-xl me-3">
-                                    <div class="avatar-name rounded-circle bg-primary-subtle text-dark"><span class="fs-9 text-primary">F</span></div>
+                                    <div class="avatar-name rounded-circle bg-primary-subtle text-dark"><span
+                                            class="fs-9 text-primary">F</span></div>
                                 </div>
                                 <div class="flex-1">
-                                    <h6 class="mb-0 d-flex align-items-center"><a class="text-800 stretched-link" href="#!">Falcon</a><span
+                                    <h6 class="mb-0 d-flex align-items-center"><a class="text-800 stretched-link"
+                                            href="#!">Falcon</a><span
                                             class="badge rounded-pill ms-2 bg-200 text-primary">38%</span></h6>
                                 </div>
                             </div>
@@ -45,14 +89,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-body-tertiary p-0"><a class="btn btn-sm btn-link d-block w-100 py-2"
-                        href="{{route('posts.index')}}">Show all posts<svg class="svg-inline--fa fa-chevron-right fa-w-10 ms-1 fs-11"
-                            aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right"
-                            role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
-                            <path fill="currentColor"
-                                d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z">
-                            </path>
-                        </svg><!-- <span class="fas fa-chevron-right ms-1 fs-11"></span> Font Awesome fontawesome.com --></a>
+                <div class="card-footer bg-body-tertiary p-0"><a class="btn btn-sm btn-link d-block w-100 py-2" href="{{ route('posts.index') }}">Show all posts<span class="fas fa-chevron-right ms-1 fs-11"></span></a>
                 </div>
             </div>
         </div>
@@ -142,14 +179,16 @@
             });
         }
 
-        $('#top5Select').change(function (e) {
+        $('#top5Select').change(function(e) {
             e.preventDefault();
             generateTop5();
         });
 
-        function generateTop5(){
+        function generateTop5() {
 
-            $('#top5Container').html('<div class="d-flex justify-content-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+            $('#top5Container').html(
+                '<div class="d-flex justify-content-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>'
+            );
             $.ajax({
                 type: "post",
                 url: "{{ route('dashboard.ajaxLoadTop5') }}",
@@ -158,23 +197,25 @@
                     type: $('#top5Select').val()
                 },
                 dataType: "json",
-                success: function (response) {
+                success: function(response) {
                     $('#top5Container').html('');
-                    var color = ['bg-success-subtle', 'bg-info-subtle', 'bg-warning-subtle', 'bg-primary-subtle', 'bg-danger-subtle' ];
-                    $.each(response, function (indexInArray, element){
-                        if($('#top5Select').val()==3){
+                    var color = ['bg-success-subtle', 'bg-info-subtle', 'bg-warning-subtle',
+                        'bg-primary-subtle', 'bg-danger-subtle'
+                    ];
+                    $.each(response, function(indexInArray, element) {
+                        if ($('#top5Select').val() == 3) {
                             value = element.comments_count;
-                        }else{
+                        } else {
                             value = element.value;
                         }
-                        var elem = value/3000*100;
+                        var elem = value / 3000 * 100;
 
                         $('#top5Container').append(`
                             <div class="row g-0 align-items-center py-2 position-relative border-bottom border-200">
                                 <div class="col ps-x1 py-1 position-static">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar avatar-xl me-3">
-                                            <div class="avatar-name rounded-circle `+color[indexInArray]+` text-dark"><span class="fs-9 text-primary"><strong>${element.title.charAt(0)}</strong></span></div>
+                                            <div class="avatar-name rounded-circle ` + color[indexInArray] + ` text-dark"><span class="fs-9 text-primary"><strong>${element.title.charAt(0)}</strong></span></div>
                                         </div>
                                         <div class="flex-1">
                                             <h6 class="mb-0 d-flex align-items-center"><a class="text-800 stretched-link" href="#!">${element.title}</a></h6>
@@ -189,7 +230,7 @@
                                         <div class="col-5 pe-x1 ps-2">
                                             <div class="progress bg-200 me-2" style="height: 5px;" role="progressbar"
                                                 aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="3000">
-                                                <div class="progress-bar rounded-pill" style="width: `+elem+`%"></div>
+                                                <div class="progress-bar rounded-pill" style="width: ` + elem + `%"></div>
                                             </div>
                                         </div>
                                     </div>

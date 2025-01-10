@@ -45,8 +45,7 @@
                                         <th>Category</th>
                                         <th>Author</th>
                                         <th>View</th>
-                                        <th>Like</th>
-                                        <th>Action</th>
+                                        <th width="15%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -59,6 +58,8 @@
             </div>
         </div>
     </div>
+
+
 @endsection
 
 @section('js')
@@ -110,14 +111,47 @@
                     name: 'view_count'
                 },
                 {
-                    data: 'likes',
-                    name: 'like_count'
-                },
-                {
                     data: 'action',
                     name: 'action'
                 }
             ]
+        });
+
+        $(document).on("click",".delete",function (e) {
+            e.preventDefault();
+            var id = $(this).data('uuid');
+            var url = '{{ route('posts.destroy', ':id') }}';
+            url = url.replace(':id', id);
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this data!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id: id
+                        },
+                        success: function (data) {
+                            swal("Poof! Your data has been deleted!", {
+                                icon: "success",
+                            });
+                            postTbl.ajax.reload();
+                        },
+                        error: function (data) {
+                            swal("Poof! Your data can't be deleted!", {
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endsection
