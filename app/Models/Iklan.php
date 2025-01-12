@@ -10,7 +10,7 @@ class Iklan extends Model
 {
     use HasFactory;
 
-    protected $connection = 'oracle';
+    // protected $connection = 'oracle'; // uncomment this line if you want to use oracle database
 
     public $timestamps = true;
 

@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('oracle')->create('iklan', function (Blueprint $table) {
+        // Schema::connection('oracle')->create('iklan', function (Blueprint $table) { // uncomment this line if you want to use oracle database
+        Schema::create('iklan', function (Blueprint $table) {
             $table->id('iklan_id');
             $table->uuid('uuid');
             $table->string('title', 255);
@@ -30,6 +31,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('oracle')->dropIfExists('iklan');
+        // Schema::connection('oracle')->dropIfExists('iklan'); // uncomment this line if you want to use oracle database
+        Schema::dropIfExists('iklan');
     }
 };
