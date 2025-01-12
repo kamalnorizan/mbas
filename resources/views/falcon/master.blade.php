@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
     <link href="{{ asset('/falcon/vendors/simplebar/simplebar.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('/falcon/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/falcon/assets/css/theme-rtl.css') }}" rel="stylesheet" id="style-rtl">
     <link href="{{ asset('/falcon/assets/css/theme.css') }}" rel="stylesheet" id="style-default">
     <link href="{{ asset('/falcon/assets/css/user-rtl.css') }}" rel="stylesheet" id="user-style-rtl">
@@ -96,6 +97,7 @@
     <script src="{{ asset('/falcon/vendors/is/is.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/fontawesome/all.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/lodash/lodash.min.js') }}"></script>
+    <script src="{{ asset('/falcon/assets/js/flatpickr.js') }}"></script>
     {{-- <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script> --}}
     <script src="{{ asset('/falcon/vendors/list.js/list.min.js') }}"></script>
     <script src="{{ asset('/falcon/assets/js/theme.js') }}"></script>

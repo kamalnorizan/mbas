@@ -69,6 +69,14 @@
                             <span class="nav-link-text ps-1">User Management</span>
                         </div>
                     </a>
+                    <a class="nav-link {{ Route::is('audittrail.index') ? 'active':''}}" href="{{route('audittrail.index')}}" role="button">
+                        <div class="d-flex align-items-center">
+                            <span class="nav-link-icon">
+                                <span class="fas fa-chart-line"></span>
+                            </span>
+                            <span class="nav-link-text ps-1">Audit Trails</span>
+                        </div>
+                    </a>
                     @endrole
                 </li>
             </ul>

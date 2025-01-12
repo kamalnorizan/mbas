@@ -9,6 +9,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuditTrailController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -36,11 +37,19 @@ Route::middleware(['auth'])->group(function () {
         Route::group(['prefix' => 'user'], function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
             Route::get('/{uuid}', [UserController::class, 'edit'])->name('users.edit');
+            Route::post('/updateimage', [UserController::class, 'updateimage'])->name('users.updateimage');
+            Route::post('/updatecover', [UserController::class, 'updatecover'])->name('users.updatecover');
+            Route::post('/resetPassword', [UserController::class, 'resetPassword'])->name('users.resetPassword');
+            Route::put('/{uuid}', [UserController::class, 'update'])->name('users.update');
             Route::post('/assignrole', [UserController::class, 'assignrole'])->name('users.assignrole');
+            Route::delete('/{uuid}', [UserController::class, 'destroy'])->name('users.destroy');
+        });
+
+        Route::group(['prefix' => 'audittrail'], function () {
+            Route::get('/', [AuditTrailController::class, 'index'])->name('audittrail.index');
+            Route::post('/ajaxLoadAuditTrail', [AuditTrailController::class, 'ajaxLoadAuditTrail'])->name('audittrail.ajaxLoadAuditTrail');
         });
     });
-
-
 
     Route::group(['prefix' => 'profile'], function () {
         Route::get('/', [ProfileController::class, 'index'])->name('profile.index');

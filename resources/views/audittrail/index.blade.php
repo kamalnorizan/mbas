@@ -16,11 +16,15 @@
         .role {
             cursor: pointer;
         }
+
+        #post-table {
+            font-size: 12px;
+        }
     </style>
 @endsection
 
 @section('content')
-    <div class="card shadow-none border mb-2">
+    <div class="card shadow-none border">
         <div class="bg-holder bg-card d-none d-md-block"
             style="background-image:url( {{ asset('falcon/assets/img/illustrations/reports-bg.png') }});">
         </div>
@@ -31,85 +35,44 @@
                 <div class="col-lg-auto d-flex align-items-center"><img class="img-fluid"
                         src="{{ asset('falcon/assets/img/illustrations/reports-greeting.png') }}" alt="" />
                     <div class="ms-x1">
-                        <h4 class="mb-0 text-primary fw-bold">MBAS <span class="text-info fw-medium">User Management</span>
+                        <h4 class="mb-0 text-primary fw-bold">MBAS <span class="text-info fw-medium">Audit Trails</span>
                         </h4>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="card mb-3">
-
-        <div class="card-header border-bottom">
-            <div class="row flex-between-end">
-                <div class="col-auto align-self-center">
-                    <h5 class="mb-0" data-anchor="data-anchor" id="responsive-table">User Management<a
-                            class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#responsive-table"
-                            style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h5>
-                </div>
-                <div class="col-auto ms-auto">
-                    <a class="btn btn-primary" href="{{ route('posts.create') }}"><i class="fa fa-plus"
-                            aria-hidden="true"></i> Create New Post</a>
-                </div>
-            </div>
-        </div>
-        <div class="card-body position-relative  bg-body-tertiary">
-            <div class="row">
-                <div class="col-lg-12">
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table table-hover" id="post-table">
-                                <thead>
-                                    <tr>
-                                        <th>User</th>
-                                        <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>Email</th>
-                                        <th>Heading</th>
-                                        <th>Role</th>
-                                        <th width="15%">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
+                <div class="col-lg-auto pt-3 pt-lg-0">
+                    <form
+                        class="row flex-lg-column flex-xxl-row gx-3 gy-2 align-items-center align-items-lg-start align-items-xxl-center">
+                        <div class="col-auto">
+                            <h6 class="text-700 mb-0">Showing Data For: </h6>
                         </div>
-                    </div>
+                        <div class="col-md-auto position-relative">
+                            <input class="form-control form-control-sm ps-4" id="reportsDateRange" type="text"
+                                data-options="{&quot;mode&quot;:&quot;range&quot;,&quot;dateFormat&quot;:&quot;M d&quot;,&quot;disableMobile&quot;:true , &quot;defaultDate&quot;: [&quot;{{ \Carbon\Carbon::parse()->subDays(7)->format('M d') }}&quot;, &quot;{{ \Carbon\Carbon::parse()->format('M d') }}&quot;] }" /><span
+                                class="fas fa-calendar-alt text-primary position-absolute top-50 translate-middle-y ms-2">
+                            </span>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="role-model" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
-            <div class="modal-content position-relative">
-                <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
-                    <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
-                        data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <div class="rounded-top-3 py-3 ps-4 pe-6 bg-light">
-                        <h4 class="mb-1" id="modalExampleDemoLabel">Assign Role </h4>
-                    </div>
-                    <div class="p-4 pb-2 pt-2 ">
-                        <input type="hidden" id="user_id" name="user_id">
-                        <div class="form-group {{ $errors->has('role') ? 'has-error' : '' }}">
-                            <label for="role">Role</label>
-                            <select id="role" name="role" class="form-control" required>
-                                @foreach ($roles as $role)
-                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
-                                @endforeach
-                            </select>
-                            <small class="text-danger">{{ $errors->first('role') }}</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" id="assignRoleBtn" type="button">Assign Role </button>
-                </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-centered table-nowrap mb-0" id="post-table">
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>User</th>
+                            <th>Module</th>
+                            <th>Action</th>
+                            <th>Old Values</th>
+                            <th>New Values</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -127,6 +90,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
     <script>
+        $("#reportsDateRange").flatpickr({
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d",
+            mode: "range",
+            defaultDate: ['{{ \Carbon\Carbon::parse()->subDays(7)->format('Y-m-d') }}',
+                '{{ \Carbon\Carbon::parse()->format('Y-m-d') }}'
+            ]
+        });
+
+        $("#reportsDateRange").change(function() {
+            postTbl.ajax.reload();
+        });
+
         var postTbl = $('#post-table').DataTable({
             "dom": '<"container-fluid"<"row"<"col"l><"col"B><"col"f>>>rtip',
             buttons: [
@@ -135,39 +112,44 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{ route('users.index') }}',
-                type: 'GET'
+                url: '{{ route('audittrail.ajaxLoadAuditTrail') }}',
+                type: 'POST',
+                data: function(d) {
+                    d._token = '{{ csrf_token() }}';
+                    d.datefilter = $('#reportsDateRange').val();
+                }
             },
             columns: [{
-                    data: 'profile_picture',
-                    orderable: false,
-                    searchable: false
+                    data: 'datetime',
+                    name: 'created_at',
+                    sortable: false
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: 'user',
+                    name: 'user.name',
+                    sortable: false
                 },
                 {
-                    data: 'phone',
-                    name: 'phone'
-                },
-                {
-                    data: 'email',
-                    name: 'email'
-                },
-                {
-                    data: 'heading',
-                    name: 'heading'
-                },
-                {
-                    data: 'roles',
-                    searchable: false
+                    data: 'module',
+                    name: 'auditable_type',
+                    sortable: false
                 },
                 {
                     data: 'action',
-                    orderable: false,
-                    searchable: false
+                    name: 'action',
+                    sortable: false
+                },
+                {
+                    data: 'old_values',
+                    name: 'old_values',
+                    sortable: false
+                },
+                {
+                    data: 'new_values',
+                    name: 'new_values',
+                    sortable: false
                 }
+
             ]
         });
 

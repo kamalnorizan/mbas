@@ -4,23 +4,44 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Comment;
+use OwenIt\Auditing\Audit;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use OwenIt\Auditing\Contracts\Auditable;
-use Illuminate\Database\Eloquent\SoftDeletes;
+
 class User extends Authenticatable implements Auditable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
     use \OwenIt\Auditing\Auditable;
+
+    protected $auditExclude = ['remember_token'];
+
+
     /**
-     * The attributes that are mass assignable.
-     *`
-     * @var array<int, string>
+     * Create an audit entry with a custom event (e.g., login, logout)
+     *
+     * @param string $event
+     * @return void
      */
+    public function auditEvent($event)
+    {
+        // Create an audit entry with a custom event (e.g., login, logout)
+        Audit::create([
+            'auditable_type' => self::class,
+            'auditable_id'   => $this->id,
+            'event'          => $event,
+            'url'            => request()->fullUrl(),
+            'ip_address'     => request()->ip(),
+            'user_agent'     => request()->userAgent(),
+            'created_at'     => now(),
+        ]);
+    }
+
     protected $fillable = [
         'uuid',
         'name',

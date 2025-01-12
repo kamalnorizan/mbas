@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use App\Notifications\ResetPasswordNotification;
 
 class UserController extends Controller
 {
@@ -38,7 +41,7 @@ class UserController extends Controller
                     return $roles;
                 })
                 ->addColumn('action', function (User $user) {
-                    $buttons = '<a href="' . route('users.edit', ['uuid' => $user->id]) . '" class="btn btn-sm btn-info"><i class="fa fa-edit"></i></a> ';
+                    $buttons = '<a href="' . route('users.edit', ['uuid' => $user->uuid]) . '" class="btn btn-sm btn-info"><i class="fa fa-edit"></i></a> ';
                     $buttons .= '<button class="btn btn-sm btn-danger delete" data-uuid="' . $user->uuid . '"><i class="fa fa-trash"></i></button> ';
                     return $buttons;
                 })
@@ -57,4 +60,93 @@ class UserController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function edit($uuid)
+    {
+        $user = User::where('uuid', $uuid)->first();
+        $roles = Role::all();
+        return view('user.edit', compact('user', 'roles'));
+    }
+
+    public function update(Request $request, $uuid)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $uuid . ',uuid',
+            'phone' => 'required',
+            'heading' => 'required',
+        ]);
+
+        $user = User::where('uuid', $uuid)->first();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->heading = $request->heading;
+        $user->intro = $request->intro;
+        $user->save();
+
+        flash('User updated successfully')->success();
+        return back();
+    }
+
+    public function destroy($uuid)
+    {
+        $user = User::where('uuid', $uuid)->first();
+        $user->posts()->delete();
+        $user->comments()->delete();
+        $user->delete();
+
+        flash('User deleted successfully')->success();
+        return redirect()->route('users.index');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $password = Str::random(8);
+        $user = User::where('uuid', $request->uuid)->first();
+        $user->password = Hash::make($password);
+        $user->save();
+
+        //send ResetPassword Notification
+        $user->notify(new ResetPasswordNotification($password));
+
+
+        flash('Password reset successfully')->success();
+        return back();
+    }
+
+    function updateimage(Request $request)
+    {
+        $request->validate([
+            'profile_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+        // dd($request->all());
+        $user = User::where('uuid', $request->uuid)->first();
+        $image = $request->file('profile_image');
+        $imageName = time() . '.' . $image->extension();
+        $image->move(public_path('storage/profile/personal'), $imageName);
+
+        $user->profile_picture = $imageName;
+        $user->save();
+
+        flash('Profile image updated successfully')->success();
+        return back();
+    }
+
+    function updatecover(Request $request)
+    {
+        $request->validate([
+            'cover_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $user = User::where('uuid', $request->uuid)->first();
+        $image = $request->file('cover_image');
+        $imageName = time() . '.' . $image->extension();
+        $image->move(public_path('storage/profile/cover'), $imageName);
+
+        $user->cover_image = $imageName;
+        $user->save();
+
+        flash('Cover picture updated successfully')->success();
+        return back();
+    }
 }
