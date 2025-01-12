@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Iklan;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
@@ -22,12 +23,15 @@ class DatabaseSeeder extends Seeder
         Post::factory(500)->create();
         Comment::factory(1000)->create();
 
+
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'user']);
 
         User::each(function ($user) {
             $user->assignRole('user');
         });
+
+        Iklan::factory(20)->create();
 
         $userAdmin = User::find(1)->assignRole('admin');
         echo 'Admin : ' . $userAdmin->email . ' created' . PHP_EOL;

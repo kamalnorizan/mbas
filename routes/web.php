@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FrontController;
+use App\Http\Controllers\IklanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
@@ -11,9 +13,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuditTrailController;
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+Route::get('/', [FrontController::class, 'index'])->name('front.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -32,8 +32,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/comment', [CommentController::class, 'store'])->name('comments.store');
 
-
     Route::middleware('role:admin')->group(function () {
+
+
+        Route::group(['prefix' => 'iklan'], function () {
+            Route::get('/', [IklanController::class, 'index'])->name('iklan.index');
+            Route::get('/create', [IklanController::class, 'create'])->name('iklan.create');
+            Route::post('/', [IklanController::class, 'store'])->name('iklan.store');
+            Route::post('/ajaxLoadIklan', [IklanController::class, 'ajaxLoadIklan'])->name('iklan.ajaxLoadIklan');
+            Route::get('/{uuid}/edit', [IklanController::class, 'edit'])->name('iklan.edit');
+            Route::put('/{uuid}', [IklanController::class, 'update'])->name('iklan.update');
+            Route::delete('/{uuid}', [IklanController::class, 'destroy'])->name('iklan.destroy');
+        });
+
         Route::group(['prefix' => 'user'], function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
             Route::get('/{uuid}', [UserController::class, 'edit'])->name('users.edit');

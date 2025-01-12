@@ -34,6 +34,14 @@
                         </div>
                     </div>
 
+                    <a class="nav-link" href="{{route('front.index')}}" role="button">
+                        <div class="d-flex align-items-center">
+                            <span class="nav-link-icon">
+                                <span class="fas fa-home"></span>
+                            </span>
+                            <span class="nav-link-text ps-1">Home</span>
+                        </div>
+                    </a>
                     <a class="nav-link {{ Route::is('dashboard') ? 'active':''}}" href="{{route('dashboard')}}" role="button">
                         <div class="d-flex align-items-center">
                             <span class="nav-link-icon">
@@ -61,6 +69,14 @@
                         </div>
                     </a>
                     @role('admin')
+                    <a class="nav-link {{ Route::is('iklan.index') ? 'active':''}}" href="{{route('iklan.index')}}" role="button">
+                        <div class="d-flex align-items-center">
+                            <span class="nav-link-icon">
+                                <span class="fas fa-tags"></span>
+                            </span>
+                            <span class="nav-link-text ps-1">Iklan</span>
+                        </div>
+                    </a>
                     <a class="nav-link {{ Route::is('users.index') ? 'active':''}}" href="{{route('users.index')}}" role="button">
                         <div class="d-flex align-items-center">
                             <span class="nav-link-icon">

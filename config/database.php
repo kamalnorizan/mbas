@@ -115,13 +115,13 @@ return [
 
         'oracle' => [
             'driver' => 'oracle',
-            'tns' => env('DB_TNS', ''),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '1521'),
-            'database' => env('DB_DATABASE', ''),
-            'username' => env('DB_USERNAME', ''),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'AL32UTF8'),
+            'tns' => env('DB_TNS2', ''),
+            // 'host' => env('DB_HOST2', '127.0.0.1'),
+            // 'port' => env('DB_PORT2', '1521'),
+            'database' => env('DB_TNS2', ''),
+            'username' => env('DB_USERNAME2', ''),
+            'password' => env('DB_PASSWORD2', ''),
+            'charset' => env('DB_CHARSET2', 'AL32UTF8'),
             'prefix' => '',
         ],
 

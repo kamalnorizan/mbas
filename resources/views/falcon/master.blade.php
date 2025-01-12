@@ -116,7 +116,7 @@
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (data) {
-                    window.location.href = "{{ route('login') }}";
+                    window.location.href = "{{ route('front.index') }}";
                 }
             });
         });

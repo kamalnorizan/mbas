@@ -21,7 +21,7 @@ class User extends Authenticatable implements Auditable
 
     protected $auditExclude = ['remember_token'];
 
-
+    protected $connection = 'mysql';
     /**
      * Create an audit entry with a custom event (e.g., login, logout)
      *
