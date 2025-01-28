@@ -65,4 +65,14 @@ class Post extends Model implements Auditable
     {
         return $this->hasMany(Comment::class, 'post_id', 'id');
     }
+
+    /**
+     * Get all of the images for the Post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(PostAttachment::class, 'post_id', 'id');
+    }
 }

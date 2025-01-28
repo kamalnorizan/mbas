@@ -16,4 +16,9 @@ class FrontController extends Controller
         $latestPosts = Post::orderBy('created_at', 'desc')->limit(3)->get();
         return view('front.index', compact('latestPosts','iklanList'));
     }
+
+    function postdetail($uuid) {
+        $post = Post::with('user','comments.user')->where('uuid', $uuid)->first();
+        return view('front.postdetail', compact('post'));
+    }
 }

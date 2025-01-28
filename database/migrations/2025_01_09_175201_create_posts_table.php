@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('uuid')->unique();
             $table->text('content');
             $table->string('image')->nullable();
-            $table->integer('status')->default(1);
+            $table->integer('status')->default(0)->comment('1: publish, 0: draft');
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('category_id')->unsigned();

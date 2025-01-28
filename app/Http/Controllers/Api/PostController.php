@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Models\PostAttachment;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,6 +28,7 @@ class PostController extends Controller
         $post->save();
         return response()->json($post);
     }
+
 
     function update(Request $request, $id) {
         $post = Post::find($id);

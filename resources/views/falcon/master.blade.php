@@ -88,7 +88,7 @@
 
         </div>
     </main>
-
+    @yield('modals')
     @include('falcon.offcanvas')
     <script src="{{ asset('/falcon/vendors/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('/falcon/vendors/popper/popper.min.js') }}"></script>

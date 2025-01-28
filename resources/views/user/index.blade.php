@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.dataTables.min.css">
     <style>
         .dt-info {
             margin-top: 15px;
@@ -59,7 +60,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="table table-hover" id="post-table">
+                            <table class="table table-hover display responsive" id="post-table">
                                 <thead>
                                     <tr>
                                         <th>User</th>
@@ -125,6 +126,7 @@
     <script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.print.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
 
     <script>
         var postTbl = $('#post-table').DataTable({

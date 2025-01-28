@@ -10,8 +10,8 @@
         <div class="card-header border-bottom">
             <div class="row flex-between-end">
                 <div class="col-auto align-self-center">
-                    <h5 class="mb-0" data-anchor="data-anchor" id="responsive-table">Update Post<a
-                            class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#responsive-table"
+                    <h5 class="mb-0" data-anchor="data-anchor" id="responsive-table">Update Post<a class="anchorjs-link "
+                            aria-label="Anchor" data-anchorjs-icon="#" href="#responsive-table"
                             style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h5>
                 </div>
             </div>
@@ -19,17 +19,20 @@
         <div class="card-body position-relative bg-body-tertiary">
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('posts.update',['uuid'=>$post->uuid]) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('posts.update', ['uuid' => $post->uuid]) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group {{ $errors->has('category_id') ? 'has-error' : '' }}">
-                                    <select type="text" id="category_id" name="category_id" value="{{ old('category_id') }}"
-                                        class="form-control">
+                                    <select type="text" id="category_id" name="category_id"
+                                        value="{{ old('category_id') }}" class="form-control">
                                         <option value="">Select Category</option>
                                         @foreach ($categories as $category)
-                                            <option {{ old('category_id',$post->category_id) == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                            <option
+                                                {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}
+                                                value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
                                     <small class="text-danger">{{ $errors->first('category_id') }}</small>
@@ -37,32 +40,61 @@
                             </div>
                             <div class="col-md-12 mt-3">
                                 <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
-                                    <input type="text" id="title" name="title" value="{{ old('title',$post->title) }}"
-                                        class="form-control" placeholder="Title">
+                                    <input type="text" id="title" name="title"
+                                        value="{{ old('title', $post->title) }}" class="form-control" placeholder="Title">
                                     <small class="text-danger">{{ $errors->first('title') }}</small>
                                 </div>
                             </div>
                             <div class="col-md-12  mt-3">
                                 <div class="form-group {{ $errors->has('content') ? 'has-error' : '' }}">
-                                    <textarea placeholder="Enter your message here..." rows="20" id="content" name="content" class="form-control"
-                                    >{{ old('content',$post->content) }} </textarea>
+                                    <textarea placeholder="Enter your message here..." rows="20" id="content" name="content" class="form-control">{{ old('content', $post->content) }} </textarea>
                                     <small class="text-danger">{{ $errors->first('content') }}</small>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 mt-3">
-                                    <a href="/storage/posts/{{$post->image}}" target="_blank">{{$post->image}}</a>
+                                    <a href="/storage/posts/{{ $post->image }}" target="_blank">{{ $post->image }}</a>
                                 </div>
                             </div>
                             <div class="row">
+                                @foreach ($post->images as $image)
+                                <div class="col-md-2">
+                                    <img src="{{ asset('storage/uploads/' . $image->file_path) }}" alt="" class="img-fluid" >
+                                    <br> <br>
+                                    <button type="button" data-id="{{ $image->id }}" class="btn btn-danger btn-block delImage">Delete</button>
+                                </div>
+                                @endforeach
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12 mt-3">
-                                    <input name="file" class="form-control" id="customFile" type="file">
-                                    <small class="text-muted">Upload file to replace the old file if exist</small>
+                                    <input name="file[]" class="form-control file" id="file.0" type="file">
                                     <small class="text-danger">{{ $errors->first('file') }}</small>
                                 </div>
                             </div>
+                            <div id="filediv">
+
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <div class="form-group {{ $errors->has('status') ? 'has-error' : '' }}">
+                                        <select type="text" id="status" name="status"
+                                            value="{{ old('status') }}" class="form-control">
+                                            <option {{ old('status') == 0 ? 'selected' : '' }} value="0">Draft</option>
+                                            @can('publish-post')
+                                                <option {{ old('status') == 1 ? 'selected' : '' }} value="1">Publish</option>
+                                            @endcan
+                                            <option {{ old('status') == 2 ? 'selected' : '' }} value="2">Submit</option>
+
+                                        </select>
+                                        <small class="text-danger">{{ $errors->first('status') }}</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-12 mt-3">
-                                <button type="submit" class="btn btn-primary float-end">Submit</button>
+                                <div class="float-end">
+                                    <button id="newFile" type="button" class="btn btn-info ">Add New File</button>
+                                    <button type="button" id="submitBtn" class="btn btn-primary ">Submit</button>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -73,4 +105,147 @@
 @endsection
 
 @section('js')
+<script src="{{ asset('falcon/vendors/tinymce/tinymce.min.js') }}"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea#content',
+            height: 300,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
+
+        $('#newFile').click(function(e) {
+            e.preventDefault();
+            var count = $('.file').length;
+            $('#filediv').append(
+                '<div class="row"><div class="col-md-11 mt-3"><input name="file[]" class="form-control file" id="file.'+count+'" type="file"><small class="text-danger">{{ $errors->first('file') }}</small></div><div class="col-md-1 mt-3"><button type="button" class="btn btn-block btn-danger del"> <i class="fa fa-trash" aria-hidden="true"></i> </button></div>'
+                );
+        });
+
+        $('#submitBtn').click(function(e) {
+            e.preventDefault();
+            $('input').removeClass('is-invalid');
+            $('select').removeClass('is-invalid');
+            $('small.text-danger').remove();
+            var form = $('form')[0];
+            var formData = new FormData(form);
+            formData.append('contenttiny', tinymce.get('content').getContent());
+            formData.append('_token', "{{ csrf_token() }}");
+            $.ajax({
+                type: "POST",
+                url: "{{ route('posts.update', ['uuid' => $post->uuid]) }}",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = "{{ route('posts.index') }}";
+                    }
+                },
+                error: function(response) {
+                    var errors = response.responseJSON.errors;
+                    $.each(errors, function(key, value) {
+                        $(`#${key}`).addClass('is-invalid');
+                        $(`#${key}`).parent().append(
+                            `<small class="text-danger">${value}</small>`);
+                        if (key == 'contenttiny') {
+                            $('.tox-tinymce').parent().append(
+                                `<small class="text-danger">${value}</small>`);
+                        }
+                        if (key.includes('file.')) {
+                            var id = key.split('.')[1];
+                            $(`#file\\.${id}`).addClass('is-invalid');
+                            $(`#file\\.${id}`).parent().append(
+                                `<small class="text-danger">${value}</small>`);
+                        }
+                    });
+                }
+            });
+        });
+
+        $('.delImage').click(function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var url = "{{ route('images.destroy', ':id') }}";
+            url = url.replace(':id', id);
+            var elem = $(this);
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this file!",
+                icon: "warning",
+                buttons: {cancel: {
+                    text: "Cancel",
+                    value: null,
+                    visible: true,
+                    className: "",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Yes, i'm sure!",
+                    value: true,
+                    visible: true,
+                    className: "bg-danger",
+                    closeModal: true
+                }}
+            }).then((value)=>{
+                if(value==true){
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id: id
+                        },
+                        success: function (data) {
+                            swal("Poof! Your data has been deleted!", {
+                                icon: "success",
+                            });
+                            elem.parent().remove();
+                        },
+                        error: function (data) {
+                            swal("Poof! Your data can't be deleted!", {
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            });
+
+        });
+
+        $(document).on("click", ".del", function(e) {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this file!",
+                icon: "warning",
+                buttons: {cancel: {
+                    text: "Cancel",
+                    value: null,
+                    visible: true,
+                    className: "",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Yes, i'm sure!",
+                    value: true,
+                    visible: true,
+                    className: "bg-danger",
+                    closeModal: true
+                }}
+            }).then((value)=>{
+                // alert(value);
+                if(value==true){
+                    $(this).parent().parent().remove();
+                }
+            });
+        });
+    </script>
 @endsection

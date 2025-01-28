@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use App\Notifications\EmailUpdateNotification;
 use App\Notifications\ResetPasswordNotification;
 
 class UserController extends Controller
@@ -34,7 +36,10 @@ class UserController extends Controller
                             $roles .= '<span data-uuid="'.$user->uuid.'" class="badge bg-success role">' . strtoupper($role->name) . '</span> ';
                         } else if ($role->name == 'user') {
                             $roles .= '<span data-uuid="'.$user->uuid.'" class="badge bg-primary role">' . strtoupper($role->name) . '</span> ';
-                        } else {
+                        }else if ($role->name == 'author') {
+                            $roles .= '<span data-uuid="'.$user->uuid.'" class="badge bg-warning role">' . strtoupper($role->name) . '</span> ';
+                        }
+                        else {
                             $roles .= '<span data-uuid="'.$user->uuid.'" class="badge bg-info role">' . strtoupper($role->name) . '</span> ';
                         }
                     }
@@ -64,7 +69,8 @@ class UserController extends Controller
     {
         $user = User::where('uuid', $uuid)->first();
         $roles = Role::all();
-        return view('user.edit', compact('user', 'roles'));
+        $permissions = Permission::all();
+        return view('user.edit', compact('user', 'roles','permissions'));
     }
 
     public function update(Request $request, $uuid)
@@ -77,12 +83,16 @@ class UserController extends Controller
         ]);
 
         $user = User::where('uuid', $uuid)->first();
+        $oldVal = clone $user;
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->heading = $request->heading;
         $user->intro = $request->intro;
         $user->save();
+        if ($request->email != $oldVal->email) {
+            $user->notify(new EmailUpdateNotification());
+        }
 
         flash('User updated successfully')->success();
         return back();
@@ -149,4 +159,21 @@ class UserController extends Controller
         flash('Cover picture updated successfully')->success();
         return back();
     }
+
+    function updaterole(Request $request)
+    {
+        $user = User::where('uuid', $request->uuid)->first();
+        $user->syncRoles($request->roles);
+        flash('Role(s) assigned successfully')->success()->important();
+        return back();
+    }
+
+    function updatepermission(Request $request)
+    {
+        $user = User::where('uuid', $request->uuid)->first();
+        $user->syncPermissions($request->permissions);
+        flash('Permission(s) assigned successfully')->success()->important();
+        return back();
+    }
+
 }

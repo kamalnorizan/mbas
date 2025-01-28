@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "anhskohbo/no-captcha": "^3.6",
+        "arcanedev/log-viewer": "^10.1",
         "guzzlehttp/guzzle": "^7.2",
         "laracasts/flash": "^3.2",
         "laravel/framework": "^10.10",
@@ -14,6 +15,7 @@
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.5",
         "owen-it/laravel-auditing": "^13.6",
+        "spatie/laravel-backup": "^9.2",
         "spatie/laravel-permission": "^6.9",
         "yajra/laravel-datatables-oracle": "^10.11",
         "yajra/laravel-oci8": "^10.6"

@@ -97,8 +97,16 @@
                                 @enderror
                                 <div class="mb-3">
                                 </div>
-                                <button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Send
-                                    reset link</button>
+                                <div class="mb-3">
+                                    <div class="row mt-3">
+                                        <div class="col-2">
+                                            <a href="{{route('front.index')}}" class="btn btn-info "  name="btn-back"> <i class="fa fa-home"></i> </a>
+                                        </div>
+                                        <div class="col-10">
+                                            <button class="btn btn-primary d-block w-100" type="submit" name="submit">Send reset link</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
 
                         </div>
@@ -120,7 +128,7 @@
     <script src="{{ asset('falcon/vendors/is/is.min.js') }}"></script>
     <script src="{{ asset('falcon/vendors/fontawesome/all.min.js') }}"></script>
     <script src="{{ asset('falcon/vendors/lodash/lodash.min.js') }}"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    {{-- <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script> --}}
     <script src="{{ asset('falcon/vendors/list.js/list.min.js') }}"></script>
     <script src="{{ asset('falcon/assets/js/theme.js') }}"></script>
 

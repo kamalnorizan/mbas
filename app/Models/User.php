@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use OwenIt\Auditing\Models\Audit as ModelsAudit;
 class User extends Authenticatable implements Auditable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
@@ -21,26 +21,28 @@ class User extends Authenticatable implements Auditable
 
     protected $auditExclude = ['remember_token'];
 
-    protected $connection = 'mysql';
     /**
      * Create an audit entry with a custom event (e.g., login, logout)
      *
      * @param string $event
      * @return void
      */
-    public function auditEvent($event)
-    {
-        // Create an audit entry with a custom event (e.g., login, logout)
-        Audit::create([
-            'auditable_type' => self::class,
-            'auditable_id'   => $this->id,
-            'event'          => $event,
-            'url'            => request()->fullUrl(),
-            'ip_address'     => request()->ip(),
-            'user_agent'     => request()->userAgent(),
-            'created_at'     => now(),
-        ]);
-    }
+
+     public function auditEvent($event)
+     {
+        $user = $this->id;
+        ModelsAudit::create([
+             'auditable_type' => self::class,
+             'auditable_id'   => $user,
+             'user_type'      => self::class,
+             'user_id'   => $user,
+             'event'          => $event,
+             'url'            => request()->fullUrl(),
+             'ip_address'     => request()->ip(),
+             'user_agent'     => request()->userAgent(),
+             'created_at'     => now(),
+         ]);
+     }
 
     protected $fillable = [
         'uuid',

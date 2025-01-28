@@ -18,16 +18,29 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+        $article = '';
+        for ($i = 0; $i < 2; $i++) {
+            $article .= "<p>";
+            for ($j = 0; $j < 2; $j++) {
+                $article .= $this->faker->paragraph;
+            }
+            $article .= "</p>";
+        }
+        //random date between 2024-11-01 and 2025-02-04
+
+        $random_date = Carbon::parse('2024-11-01')->addDays(rand(0, Carbon::parse('2025-02-03')->diffInDays('2024-11-01')));
+
         return [
             'title' => $this->faker->sentence,
             'uuid' => Uuid::uuid4(),
-            'content' => $this->faker->paragraph,
-            'status' => 1,
-            'user_id' => rand(1, 10),
+            'content' => $article,
+            'status' => rand(0, 2),
+            'user_id' => rand(4, 6),
             'category_id' => rand(1, 10),
             'view_count' => rand(1, 1000),
             'like_count' => rand(1, 1000),
-            'created_at' => Carbon::parse('2024-01-01')->addDays(rand(1, 350)),
+            'created_at' => $random_date,
+            'updated_at' => $random_date,
         ];
     }
 }

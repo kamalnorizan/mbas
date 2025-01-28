@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.dataTables.min.css">
     <style>
         .dt-info {
             margin-top: 15px;
@@ -28,7 +29,6 @@
         <div class="bg-holder bg-card d-none d-md-block"
             style="background-image:url( {{ asset('falcon/assets/img/illustrations/reports-bg.png') }});">
         </div>
-        <!--/.bg-holder-->
 
         <div class="card-header z-1">
             <div class="row flex-between-center gx-0">
@@ -55,7 +55,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-centered table-nowrap mb-0" id="iklan-table">
+                <table class="table table-centered table-nowrap mb-0  display responsive" id="iklan-table">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -159,6 +159,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.9/dayjs.min.js"></script>
     <script src="{{ asset('falcon/vendors/tinymce/tinymce.min.js') }}"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.min.js"></script>
     <script>
         tinymce.init({
             selector: 'textarea#description',

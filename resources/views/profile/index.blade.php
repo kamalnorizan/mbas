@@ -62,7 +62,7 @@
                         <div class="col-lg-6">
                             <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                                 <label for="email">Email address</label>
-                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}"
+                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" @unless(auth()->user()->hasRole('admin')) disabled @endunless
                                     class="form-control" required>
                                 <small class="text-danger">{{ $errors->first('email') }}</small>
                             </div>
@@ -154,7 +154,7 @@
 @endsection
 
 @section('js')
-    
+
     <script>
         $('#profile_image').change(function(e) {
             e.preventDefault();

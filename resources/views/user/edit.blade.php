@@ -19,7 +19,8 @@
                         <form action="{{ route('users.updatecover') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            <input type="hidden" name="uuid" id="uuid" class="form-control" value="{{$user->uuid}}">
+                            <input type="hidden" name="uuid" id="uuid" class="form-control"
+                                value="{{ $user->uuid }}">
 
                             <input class="d-none" id="cover_image" name="cover_image" type="file" />
                         </form>
@@ -32,7 +33,8 @@
                                 alt="" data-dz-thumbnail="data-dz-thumbnail" />
                             <form action="{{ route('users.updateimage') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <input type="hidden" name="uuid" id="uuid" class="form-control" value="{{$user->uuid}}">
+                                <input type="hidden" name="uuid" id="uuid" class="form-control"
+                                    value="{{ $user->uuid }}">
                                 <input class="d-none" id="profile_image" name="profile_image" type="file" />
                             </form>
                             <label class="mb-0 overlay-icon d-flex flex-center" for="profile_image"><span
@@ -52,10 +54,11 @@
                     <h5 class="mb-0">Profile Settings</h5>
                 </div>
                 <div class="card-body bg-light">
-                    <form class="row g-3" action="{{ route('users.update',['uuid'=>$user->uuid]) }}" method="POST">
+                    <form class="row g-3" action="{{ route('users.update', ['uuid' => $user->uuid]) }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" name="uuid" id="uuid" class="form-control" value="{{$user->uuid}}">
+                        <input type="hidden" name="uuid" id="uuid" class="form-control"
+                            value="{{ $user->uuid }}">
                         <div class="col-lg-12">
                             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                 <label for="name">Name</label>
@@ -67,8 +70,8 @@
                         <div class="col-lg-6">
                             <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                                 <label for="email">Email address</label>
-                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}"
-                                    class="form-control" required>
+                                <input type="email" id="email" name="email"
+                                    value="{{ old('email', $user->email) }}" class="form-control" required>
                                 <small class="text-danger">{{ $errors->first('email') }}</small>
                             </div>
                         </div>
@@ -84,7 +87,8 @@
                             <div class="form-group {{ $errors->has('heading') ? 'has-error' : '' }}">
                                 <label for="heading">Heading</label>
                                 <input type="text" id="heading" name="heading"
-                                    value="{{ old('heading', $user->heading) }}" class="form-control" required="required">
+                                    value="{{ old('heading', $user->heading) }}" class="form-control"
+                                    required="required">
                                 <small class="text-danger">{{ $errors->first('heading') }}</small>
                             </div>
                         </div>
@@ -111,23 +115,85 @@
                     <div class="card-body bg-light">
                         <form action="{{ route('users.resetPassword') }}" method="POST">
                             @csrf
-                            <input type="hidden" name="uuid" id="uuid" class="form-control" value="{{$user->uuid}}">
+                            <input type="hidden" name="uuid" id="uuid" class="form-control"
+                                value="{{ $user->uuid }}">
                             <button class="btn btn-primary d-block w-100" type="submit">Reset Password </button>
                         </form>
                     </div>
                 </div>
+                @can('update-role')
                 <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Roles</h5>
+                    </div>
+                    <div class="card-body bg-light">
+                        <form action="{{ route('users.updaterole') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="uuid" id="uuid" class="form-control"
+                                value="{{ $user->uuid }}">
+                            <div class="row">
+                                @foreach ($roles as $role)
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="{{ $role->name }}"
+                                                name="roles[]" id="permission-{{ $role->id }}"
+                                                @if ($user->roles->contains($role->id)) checked @endif>
+                                            <label class="form-check label"
+                                                for="permission-{{ $role->id }}">{{ Str::ucfirst(str_replace('-', ' ', $role->name)) }}</label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="col-12 d-flex mt-3">
+                                <button class="btn btn-primary d-block w-100" type="submit">Assign</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Direct Permission</h5>
+                    </div>
+                    <div class="card-body bg-light">
+                        <form action="{{ route('users.updatepermission') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="uuid" id="uuid" class="form-control"
+                                value="{{ $user->uuid }}">
+                            <div class="row">
+                                @foreach ($permissions as $permission)
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                value="{{ $permission->name }}" name="permissions[]"
+                                                id="permission-{{ $permission->id }}"
+                                                @if ($user->permissions->contains($permission->id)) checked @endif>
+                                            <label class="form-check
+                            label"
+                                                for="permission-{{ $permission->id }}">{{ Str::ucfirst(str_replace('-', ' ', $permission->name)) }}</label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="col-12 d-flex mt-3">
+                                <button class="btn btn-primary d-block w-100" type="submit">Assign</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                @endcan
+                <div class="card mt-3">
                     <div class="card-header">
                         <h5 class="mb-0">Danger Zone</h5>
                     </div>
                     <div class="card-body bg-light">
                         <h5 class="fs-0">Delete this account</h5>
                         <p class="fs--1">Once you delete a account, there is no going back. Please be certain.</p><button
-                            class="btn btn-falcon-danger d-block" type="button" id="deactivateBtn">Deactivate Account</button>
-                            <form id="deleteAcc"  action="{{route('users.destroy',['uuid'=>$user->uuid])}}" method="post">
-                                @csrf
-                                @method('DELETE')
-                            </form>
+                            class="btn btn-falcon-danger d-block" type="button" id="deactivateBtn">Deactivate
+                            Account</button>
+                        <form id="deleteAcc" action="{{ route('users.destroy', ['uuid' => $user->uuid]) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                        </form>
                     </div>
                 </div>
             </div>
@@ -136,7 +202,6 @@
 @endsection
 
 @section('js')
-
     <script>
         $('#profile_image').change(function(e) {
             e.preventDefault();
@@ -156,28 +221,30 @@
             alert('{{ $errors->first('cover_image') }}');
         @endif
 
-        $('#deactivateBtn').click(function (e) {
+        $('#deactivateBtn').click(function(e) {
             e.preventDefault();
             swal({
                 title: "Are you sure?",
                 text: "You will not be able to recover this account again!",
                 icon: "warning",
-                buttons: {cancel: {
-                    text: "Cancel",
-                    value: null,
-                    visible: true,
-                    className: "btn btn-secondary",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Yes, i'm sure!",
-                    value: true,
-                    visible: true,
-                    className: "btn btn-danger",
-                    closeModal: true
-                }}
-            }).then((value)=>{
-                if(value){
+                buttons: {
+                    cancel: {
+                        text: "Cancel",
+                        value: null,
+                        visible: true,
+                        className: "btn btn-secondary",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Yes, i'm sure!",
+                        value: true,
+                        visible: true,
+                        className: "btn btn-danger",
+                        closeModal: true
+                    }
+                }
+            }).then((value) => {
+                if (value) {
                     $('#deleteAcc').submit();
                 }
             });

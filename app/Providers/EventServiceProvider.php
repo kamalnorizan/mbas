@@ -23,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
             \Illuminate\Auth\Events\Logout::class => [
                 \App\Listeners\LogSuccessfulLogout::class,
             ],
+            \Spatie\Backup\Events\BackupWasSuccessful::class => [
+                \App\Listeners\LogBackupPath::class,
+            ],
         ],
     ];
 
@@ -39,6 +42,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function shouldDiscoverEvents(): bool
     {
-        return false;
+        return true;
     }
 }

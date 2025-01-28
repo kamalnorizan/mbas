@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-
+use OwenIt\Auditing\Models\Audit;
 class DashboardController extends Controller
 {
     function index()
@@ -67,5 +67,41 @@ class DashboardController extends Controller
         return response()->json($data);
     }
 
+    function ajaxLoadStatusCount(Request $request) {
 
+        $data = Post::select(DB::raw('count(*) as count, status'));
+
+        if($request->filter == 'week') {
+            //last 7 days
+            $data = $data->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()]);
+        } else if($request->filter == 'month') {
+            $lastMonth = Carbon::now()->subMonth();
+            $data = $data->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year);
+        } else if($request->filter == 'year') {
+            $data = $data->whereYear('created_at', Carbon::now()->year - 1);
+        }
+
+        $data = $data->groupBy('status')->get();
+
+        return response()->json($data);
+    }
+
+    function ajaxLoadActivityChart(Request $request){
+        $data = Audit::select(DB::raw('count(*) as count, event'));
+
+        if($request->filter == 'week') {
+            //last 7 days
+            $data = $data->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()]);
+        } else if($request->filter == 'month') {
+            $lastMonth = Carbon::now()->subMonth();
+            $data = $data->whereMonth('created_at', $lastMonth->month)->whereYear('created_at', $lastMonth->year);
+        } else if($request->filter == 'year') {
+            $data = $data->whereYear('created_at', Carbon::now()->year - 1);
+        }
+
+        $data = $data->groupBy('event')->get();
+
+        return response()->json($data);
+
+    }
 }

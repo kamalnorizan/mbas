@@ -278,7 +278,7 @@
                                 </div>
                                 <div class="card-body pt-6 pb-4">
                                     <h5 class="mb-2">{{ $post->title }}</h5>
-                                    <p>{{ $post->content }} <br> ~ {{ $post->user->name }}</p>
+                                    <p>{!! Str::limit($post->content,20) !!} <a href="{{route('front.post.show',['uuid'=>$post->uuid])}}"><small>Read More</small></a> <br> ~ {{ $post->user->name }}</p>
                                 </div>
                             </div>
                         </div>

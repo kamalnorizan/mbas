@@ -38,6 +38,14 @@ class CommentController extends Controller
         $comment->content = $request->content;
         $comment->save();
 
+        if($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Comment stored successfully',
+                'data' => $comment
+            ]);
+        }
+
         flash('Comment stored successfully')->success()->important();
         return redirect()->back();
     }

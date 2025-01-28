@@ -258,6 +258,9 @@
                         </div>
                         <div class="card-footer bg-body-tertiary">
                             <ul class="pager  list-inline mb-0">
+                                <li class="home">
+                                    <a href="{{route('front.index')}}" id="homeBtn" class="btn btn-info "  name="btn-back"> <i class="fa fa-home"></i> </a>
+                                </li>
                                 <li class="previous">
                                     <button class="btn btn-link ps-0 d-none" id="btnPrev" type="button">
                                         <span class="fas fa-chevron-left me-2" data-fa-transform="shrink-3"></span>
@@ -288,7 +291,7 @@
     <script src="{{ asset('falcon/vendors/lottie/lottie.min.js') }}"></script>
     <script src="{{ asset('falcon/vendors/fontawesome/all.min.js') }}"></script>
     <script src="{{ asset('falcon/vendors/lodash/lodash.min.js') }}"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    {{-- <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script> --}}
     <script src="{{ asset('falcon/vendors/list.js/list.min.js') }}"></script>
     <script src="{{ asset('falcon/assets/js/theme.js') }}"></script>
     <script>
@@ -381,6 +384,7 @@
         $('#btnPrev').click(function(e) {
             var $activeTab = $('.nav-link.active');
             var currTab = $activeTab.data('wizard-step');
+
         });
     </script>
 

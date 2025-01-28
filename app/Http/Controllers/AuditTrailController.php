@@ -18,7 +18,7 @@ class AuditTrailController extends Controller
 
     function ajaxLoadAuditTrail(Request $request)
     {
-        $audits = Audit::orderBy('created_at', 'desc')->get();
+        $audits = Audit::orderBy('created_at', 'desc');
 
         if($request->datefilter != null){
             $datearr = explode(' to ', $request->datefilter);
@@ -30,7 +30,7 @@ class AuditTrailController extends Controller
                 $end_date = Carbon::parse(date('Y-m-d', strtotime($datearr[1])))->addDay();
             }
 
-            $audits = Audit::whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc')->get();
+            $audits = $audits->whereBetween('created_at', [$start_date, $end_date])->orderBy('created_at', 'desc');
         }
         return DataTables::of($audits)
             ->addColumn('user', function ($audit) {
@@ -47,6 +47,10 @@ class AuditTrailController extends Controller
                     $action = '<span class="badge bg-info">Updated</span>';
                 } else if ($audit->event == 'deleted') {
                     $action = '<span class="badge bg-danger">Deleted</span>';
+                }else if ($audit->event == 'login') {
+                    $action = '<span class="badge bg-warning">Logged In</span>';
+                }else if ($audit->event == 'logout') {
+                    $action = '<span class="badge bg-warning">Logged Out</span>';
                 }
                 return $action;
             })
@@ -58,6 +62,10 @@ class AuditTrailController extends Controller
             })
             ->addColumn('old_values', function ($audit) {
                 $values = '';
+                if ($audit->old_values == null) {
+                    return '-';
+                }
+
                 foreach ($audit->old_values as $key => $value) {
                     $values .= $key . ' : ' . $value . '<br>';
                 }
@@ -65,6 +73,9 @@ class AuditTrailController extends Controller
             })
             ->addColumn('new_values', function ($audit) {
                 $values = '';
+                if ($audit->new_values == null) {
+                    return '-';
+                }
                 foreach ($audit->new_values as $key => $value) {
                     $values .= $key . ' : ' . $value . '<br>';
                 }
