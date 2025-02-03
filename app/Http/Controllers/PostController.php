@@ -7,6 +7,7 @@ use Ramsey\Uuid\Uuid;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\PostAttachment;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePostRequest;
@@ -22,6 +23,7 @@ class PostController extends Controller
     {
         $categories = Category::pluck('name', 'id');
         $authors = Post::select('user_id')->with('user')->distinct()->get();
+
         return view('post.index', compact('categories', 'authors'));
     }
 
@@ -80,6 +82,8 @@ class PostController extends Controller
                 ->addIndexColumn()
                 ->make(true);
     }
+
+
 
     /**
      * Show the form for creating a new resource.

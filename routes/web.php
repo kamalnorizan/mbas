@@ -15,6 +15,11 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuditTrailController;
 
+
+// DB::listen(function ($event) {
+//     dump($event->sql);
+// });
+
 Route::get('/', [FrontController::class, 'index'])->name('front.index');
 Route::get('posts/{uuid}', [FrontController::class, 'postdetail'])->name('front.post.show');
 Route::middleware(['auth'])->group(function () {

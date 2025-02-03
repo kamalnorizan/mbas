@@ -17,8 +17,7 @@
         "owen-it/laravel-auditing": "^13.6",
         "spatie/laravel-backup": "^9.2",
         "spatie/laravel-permission": "^6.9",
-        "yajra/laravel-datatables-oracle": "^10.11",
-        "yajra/laravel-oci8": "^10.6"
+        "yajra/laravel-datatables-oracle": "^10.11"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

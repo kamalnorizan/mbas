@@ -37,7 +37,7 @@
                 role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
                 <div class="avatar avatar-xl">
-                        <img class="rounded-circle" src="{{ asset('storage/profile/personal/'.auth()->user()->profile_picture) }}" alt="" />
+                        <img class="rounded-circle" src="{{ asset('storage/profile/personal/'.Auth::user()->profile_picture) }}" alt="" />
                 </div>
             </a>
             <div class="dropdown-menu dropdown-caret dropdown-caret dropdown-menu-end py-0"
