@@ -48,13 +48,37 @@ class RegisterController extends Controller
                 $otpMobileCrypt = Crypt::encrypt($otpmobile);
                 $request->session()->put('otpmobile',$otpMobileCrypt);
                 $smsnumber = '6'.$request->otpPhone;
-                $msg = 'MASJID AT-TAQWA Your otp code is '.$otpmobile;
+                $msg = 'MBAS-Template Your otp code is '.$otpmobile;
                 $apiKey = env('SMSAPIKEY');
-                $url =  'https://www.sms123.net/api/send.php?apiKey='.$apiKey.'&recipients='.$smsnumber.'&messageContent='.$msg;
-                $response = file_get_contents($url);
-                $response= json_decode($response);
+		$apiUrl = 'https://mysmsdvsb.azurewebsites.net/api/messages';
+		$data = [
+    			"keyword" => "MBAS-Template", // Change this to your actual keyword
+    			"message" => $msg, // SMS content
+    			"msisdn" => $smsnumber // Recipient phone number
+		];
+                $options = [
+    			'http' => [
+        		'header'  => "Content-Type: application/json\r\n",
+        		'method'  => 'POST',
+        		'content' => json_encode($data),
+    			]
+		];
 
-                return response()->json(['success'=>true]);
+		$context  = stream_context_create($options);
+		$response = file_get_contents($apiUrl, false, $context);
+
+		if ($response === FALSE) {
+    			die('Error sending SMS');
+		}
+
+		// Decode the response
+		$responseData = json_decode($response, true);
+		if ($responseData && isset($responseData['status_code']) && $responseData['status_code'] == 200) {
+                	return response()->json(['success'=>true]);
+		}else{
+			return response()->json(['success'=>false]);
+
+		}
             }else{
                 return response()->json(['success'=>false,'message'=>'Invalid OTP']);
             }
