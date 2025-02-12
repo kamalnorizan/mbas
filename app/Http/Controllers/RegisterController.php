@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Notifications\RegisterOTP;
 use App\Http\Controllers\Controller;
@@ -47,34 +48,25 @@ class RegisterController extends Controller
                 $otpmobile = rand(100000, 999999);
                 $otpMobileCrypt = Crypt::encrypt($otpmobile);
                 $request->session()->put('otpmobile', $otpMobileCrypt);
-                $smsnumber = '6' . $request->otpPhone;
-                $msg = 'MBAS-Template Your otp code is ' . $otpmobile;
+                $userPhoneNum = str_replace([" ", "-"], "", $request->otpPhone);
+                $message = 'Your otp code is ' . $otpmobile;
                 $apiKey = env('SMSAPIKEY');
-                $apiUrl = 'https://mysmsdvsb.azurewebsites.net/api/messages';
-                $data = [
-                    "keyword" => "MBAS-Template", // Change this to your actual keyword
-                    "message" => $msg, // SMS content
-                    "msisdn" => $smsnumber // Recipient phone number
-                ];
-                $ch = curl_init($apiUrl);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    'Content-Type: application/json',
-                    "Authorization: Bearer $apiKey"
+                $client = new Client();
+                $response = $client->post("https://mysmsdvsb.azurewebsites.net/api/messages",  [
+                    'headers'        => ['Authorization' => $apiKey, 'Content-Type' => 'application/json'],
+                    'json' => [
+                        "keyword" => "MBAS",
+                        "message" => $message,
+                        "msisdn" => "+6".$userPhoneNum
+                    ]
                 ]);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
-                $response = curl_exec($ch);
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
+                $responseData = json_decode($response->getBody()->getContents(), true);
 
-                $responseData = json_decode($response, true);
-
-                if ($httpCode == 200 && isset($responseData['status_code']) && $responseData['status_code'] == 200) {
+                if ($responseData['status_code'] == 200 && !$responseData['error']) {
                     return response()->json(['success' => true]);
                 } else {
-                    return response()->json(['success' => false]);
+                    return response()->json(['success' => false, 'message' => 'Failed to send OTP']);
                 }
 
             } else {
