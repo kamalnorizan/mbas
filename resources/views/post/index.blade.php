@@ -228,5 +228,7 @@
         $('#categories, #author, #status').on('change', function() {
             postTbl.ajax.reload();
         });
+
+        
     </script>
 @endsection
